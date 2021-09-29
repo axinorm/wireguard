@@ -1,0 +1,16 @@
+[Interface]
+# Client
+# IP 
+Address = {{ item.ip_address }}
+# Clé privée
+PrivateKey = {{ lookup('vars', item.name + '_private_key').content | b64decode }}
+
+[Peer]
+# Clé public du serveur
+PublicKey = {{ server_public_key.content | b64decode }}
+
+# IP publique pour atteindre le VPN
+Endpoint = {{ public_ip_address }}:{{ port }}
+# Permettre à tout le trafic d'être routé vers le VPN
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = {{ keep_alive }}

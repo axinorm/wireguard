@@ -1,0 +1,40 @@
+---
+- name: Check if {{ item.name }}_private.key exists
+  stat:
+    path: "/etc/wireguard/{{ item.name }}_private.key"
+  register: stat_client_private_key_file
+    
+- name: "Create private client key for {{ item.name }}"
+  shell: |
+    wg genkey > {{ item.name }}_private.key
+  args:
+    chdir: /etc/wireguard
+  when: not stat_client_private_key_file.stat.exists
+  
+- name: Get private client key for {{ item.name }}
+  slurp:
+    src: /etc/wireguard/{{ item.name }}_private.key
+  register: client_private_key
+
+- name: Check if {{ item.name }}_public.key exists
+  stat:
+    path: "/etc/wireguard/{{ item.name }}_public.key"
+  register: stat_client_public_key_file
+
+- name: "Create public client key for {{ item.name }}"
+  shell: |
+    wg pubkey > {{ item.name }}_public.key < {{ item.name }}_private.key
+  args:
+    chdir: /etc/wireguard
+  when: not stat_client_public_key_file.stat.exists
+
+- name: Get public client key for {{ item.name }}
+  slurp:
+    src: /etc/wireguard/{{ item.name }}_public.key
+  register: client_public_key
+
+- name: Create variables for client {{ item.name }}
+  set_fact:
+    "{{ item.name }}_private_key": "{{ client_private_key }}"
+    "{{ item.name }}_public_key": "{{ client_public_key }}"
+...

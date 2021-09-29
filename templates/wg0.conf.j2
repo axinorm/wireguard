@@ -1,0 +1,20 @@
+[Interface]
+# Plage d'adresse privée allouée pour le VPN
+Address = {{ range_ip_addresses }}
+# Port d'écoute
+ListenPort = {{ port }}  
+# IP du DNS ici Quad9
+DNS = {{ dns_ip }}
+# Clé privée du serveur
+PrivateKey = {{ server_private_key.content | b64decode }}
+# Règles de routage en fonction de l'interface
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ network_interface }} -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ network_interface }} -j MASQUERADE
+{% for client in clients %}
+[Peer]
+# {{ client.name }}
+PublicKey = {{ lookup('vars', client.name + '_public_key').content | b64decode }}
+# IP pour le {{ client.name }}
+AllowedIPs = {{ client.ip_address }}
+PersistentkeepAlive = 60
+{% endfor %}

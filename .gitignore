@@ -1,0 +1,6 @@
+*.retry
+id_rsa*
+.vagrant
+.DS_Store
+wg0*.png
+wg0*.conf

@@ -1,0 +1,28 @@
+---
+- name: Template client conf for {{ item.name }}
+  template:
+    src: wg0-client.conf.j2
+    dest: /etc/wireguard/wg0-{{ item.name }}.conf
+  notify: Restart wireguard interface
+
+- name: Get client file in local for {{ item.name }}
+  fetch:
+    src: /etc/wireguard/wg0-{{ item.name }}.conf
+    dest: wg0-{{ item.name }}.conf
+    flat: yes
+
+- name: Check if qrencode is installed
+  command: which qrencode
+  delegate_to: 127.0.0.1
+  become: false
+  register: which_qrencode
+  ignore_errors: true
+  changed_when: false
+
+- name: Create QRCode with config file for {{ item.name }}
+  shell: |
+    qrencode -o wg0-{{ item.name }}.png -r wg0-{{ item.name }}.conf
+  delegate_to: 127.0.0.1
+  become: false
+  when: which_qrencode.failed == false
+...

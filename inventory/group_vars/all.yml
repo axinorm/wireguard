@@ -1,0 +1,13 @@
+---
+range_ip_addresses: 10.10.0.0/24
+port: 51820
+dns_ip: 9.9.9.9 # Quad9
+network_interface: eth0
+keep_alive: 25
+
+public_ip_address:
+
+clients:
+- name: client1
+  ip_address: 10.10.0.1/32
+...
