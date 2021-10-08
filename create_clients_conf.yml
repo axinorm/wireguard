@@ -20,8 +20,7 @@
   changed_when: false
 
 - name: Create QRCode with config file for {{ item.name }}
-  shell: |
-    qrencode -o wg0-{{ item.name }}.png -r wg0-{{ item.name }}.conf
+  command: qrencode -o wg0-{{ item.name }}.png -r wg0-{{ item.name }}.conf
   delegate_to: 127.0.0.1
   become: false
   when: which_qrencode.failed == false

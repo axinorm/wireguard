@@ -2,4 +2,4 @@
 
 # Requirements
 
-Install ``qrencode`` for generate a QRCode with the config file.
+Install ``qrencode`` to generate a QRCode with the config file.

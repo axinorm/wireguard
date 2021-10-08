@@ -18,34 +18,22 @@
       state: directory
       mode: 0600
 
-  - name: Check if server_private.key exists
-    stat:
-      path: /etc/wireguard/server_private.key
-    register: stat_server_private_key_file
-
   - name: Create private server key
-    shell: |
-      wg genkey > server_private.key
+    command: wg genkey > server_private.key
     args:
       chdir: /etc/wireguard
-    when: not stat_server_private_key_file.stat.exists
+      creates: /etc/wireguard/server_private.key
 
   - name: Get private server key value
     slurp:
       src: /etc/wireguard/server_private.key
     register: server_private_key
 
-  - name: Check if server_public.key exists
-    stat:
-      path: /etc/wireguard/server_public.key
-    register: stat_server_public_key_file
-
   - name: Create public server key
-    shell: |
-      wg pubkey > server_public.key < server_private.key
+    command: wg pubkey > server_public.key < server_private.key
     args:
       chdir: /etc/wireguard
-    when: not stat_server_public_key_file.stat.exists
+      creates: /etc/wireguard/server_public.key
 
   - name: Get public server key value
     slurp:
