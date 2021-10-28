@@ -1,6 +1,6 @@
 --- 
 - name: "Create private client key for {{ item.name }}"
-  command: wg genkey > {{ item.name }}_private.key
+  shell: wg genkey > {{ item.name }}_private.key
   args:
     chdir: /etc/wireguard
     creates: "/etc/wireguard/{{ item.name }}_private.key"
@@ -11,7 +11,7 @@
   register: client_private_key
 
 - name: "Create public client key for {{ item.name }}"
-  command: wg pubkey > {{ item.name }}_public.key < {{ item.name }}_private.key
+  shell: wg pubkey > {{ item.name }}_public.key < {{ item.name }}_private.key
   args:
     chdir: /etc/wireguard
     creates: "/etc/wireguard/{{ item.name }}_public.key"

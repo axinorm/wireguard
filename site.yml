@@ -19,7 +19,7 @@
       mode: 0600
 
   - name: Create private server key
-    command: wg genkey > server_private.key
+    shell: wg genkey > server_private.key
     args:
       chdir: /etc/wireguard
       creates: /etc/wireguard/server_private.key
@@ -30,7 +30,7 @@
     register: server_private_key
 
   - name: Create public server key
-    command: wg pubkey > server_public.key < server_private.key
+    shell: wg pubkey > server_public.key < server_private.key
     args:
       chdir: /etc/wireguard
       creates: /etc/wireguard/server_public.key
